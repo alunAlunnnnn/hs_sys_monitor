@@ -4,7 +4,7 @@ import json
 from functools import lru_cache
 
 
-# @lru_cache
+@lru_cache
 def get_hrad_info(start_time):
     print("func get_hrad_info")
     hard_info = {}
@@ -36,7 +36,7 @@ def get_hrad_info(start_time):
     return hard_info
 
 
-# @lru_cache
+@lru_cache
 def _get_cpu_status(start_time):
     print("func _get_cpu_status")
     cpu_status = {}
@@ -56,7 +56,7 @@ def _get_cpu_status(start_time):
     return cpu_status
 
 
-# @lru_cache
+@lru_cache
 def _get_mem_status(start_time):
     print("func _get_mem_status")
     mem_status = {}
@@ -81,7 +81,7 @@ def _get_mem_status(start_time):
     return mem_status
 
 
-# @lru_cache
+@lru_cache
 def _get_disk_status(start_time):
     print("func _get_disk_status")
     disk_status_res = {}
@@ -110,7 +110,7 @@ def _get_disk_status(start_time):
     return disk_status_res
 
 
-# @lru_cache
+@lru_cache
 def _get_disk_capacity(time):
     print("func _get_disk_capacity")
     disk_status = {}
@@ -129,7 +129,7 @@ def _get_disk_capacity(time):
     return disk_status
 
 
-# @lru_cache()
+@lru_cache()
 def _byte_convert(bytes, target_type):
     target_type = target_type.lower().strip()
     if target_type in ("k", "kb", "kilobyte"):
