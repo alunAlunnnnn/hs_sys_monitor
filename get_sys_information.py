@@ -4,14 +4,16 @@ import json
 from functools import lru_cache
 
 
-def get_hrad_info():
+# @lru_cache
+def get_hrad_info(start_time):
+    print("func get_hrad_info")
     hard_info = {}
     # get cpu info
     cpu_count_logical = psutil.cpu_count()
     cpu_count_physical = psutil.cpu_count(logical=False)
 
     # get disk info
-    disk_info = _get_disk_capacity()
+    disk_info = _get_disk_capacity(start_time)
     hard_info["disk_info"] = disk_info
 
     # save all infos
@@ -21,7 +23,7 @@ def get_hrad_info():
     }
 
     # get ram info
-    mem_info = _get_mem_status()
+    mem_info = _get_mem_status(start_time)
     hard_info["mem_info"] = {
         "mem_total": mem_info.get("mem_total"),
         "mem_use_size": mem_info.get("mem_use_size"),
@@ -34,7 +36,9 @@ def get_hrad_info():
     return hard_info
 
 
-def _get_cpu_status():
+# @lru_cache
+def _get_cpu_status(start_time):
+    print("func _get_cpu_status")
     cpu_status = {}
 
     cpu_use = psutil.cpu_percent(interval=1, percpu=True)
@@ -52,7 +56,9 @@ def _get_cpu_status():
     return cpu_status
 
 
-def _get_mem_status():
+# @lru_cache
+def _get_mem_status(start_time):
+    print("func _get_mem_status")
     mem_status = {}
 
     # RAM, unit is bytes
@@ -75,7 +81,9 @@ def _get_mem_status():
     return mem_status
 
 
-def _get_disk_status():
+# @lru_cache
+def _get_disk_status(start_time):
+    print("func _get_disk_status")
     disk_status_res = {}
 
     # get disk read/write capacity with dict type
@@ -102,7 +110,9 @@ def _get_disk_status():
     return disk_status_res
 
 
-def _get_disk_capacity():
+# @lru_cache
+def _get_disk_capacity(time):
+    print("func _get_disk_capacity")
     disk_status = {}
     # only get local disk
     disks = psutil.disk_partitions(all=False)
@@ -119,7 +129,7 @@ def _get_disk_capacity():
     return disk_status
 
 
-@lru_cache()
+# @lru_cache()
 def _byte_convert(bytes, target_type):
     target_type = target_type.lower().strip()
     if target_type in ("k", "kb", "kilobyte"):
@@ -139,13 +149,13 @@ def main():
     print("start: ", start)
 
     # get hard info and update table
-    hard_info = get_hrad_info()
+    hard_info = get_hrad_info(start)
     print(hard_info)
 
     # get system status info and insert into table
-    cpu_status = _get_cpu_status()
-    mem_status = _get_mem_status()
-    disk_status = _get_disk_status()
+    cpu_status = _get_cpu_status(start)
+    mem_status = _get_mem_status(start)
+    disk_status = _get_disk_status(start)
     print("cpu status: ", cpu_status)
     print("mem status: ", mem_status)
     print("disk status: ", disk_status)
