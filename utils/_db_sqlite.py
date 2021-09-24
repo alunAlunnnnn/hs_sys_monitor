@@ -1,6 +1,11 @@
 import sqlite3
+
+import click
+
 from sys_monitor.utils._file_process import FileProcessor
-from functools import cached_property
+
+
+# from functools import cached_property
 
 
 class SqliteDB:
@@ -117,11 +122,15 @@ class SqliteDB:
     def __init__(self, sqlite_db_file):
         self.file_handler = FileProcessor(sqlite_db_file)
 
+        self.conn = self.conn()
+        self.cur = self.conn.cursor()
+
         SqliteDB.instance = self
 
         self.tables = []
 
-    @cached_property
+    # @cached_property
+    # @property
     def conn(self):
         # create sqlite db
         if not self.file_handler.exists:
@@ -132,7 +141,8 @@ class SqliteDB:
 
         return conn
 
-    @cached_property
+    # @cached_property
+    # @property
     def cur(self):
         return self.conn.cursor()
 

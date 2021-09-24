@@ -1,3 +1,5 @@
+import click
+
 from sys_monitor._get_sys_information import get_sys_info
 from sys_monitor.utils._db_sqlite import SqliteDB
 

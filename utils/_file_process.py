@@ -1,5 +1,5 @@
 import os
-from functools import cached_property
+# from functools import cached_property
 
 
 class FileProcessor:
@@ -23,11 +23,13 @@ class FileProcessor:
                 return "unknown"
         return None
 
-    @cached_property
+    # @cached_property
+    @property
     def dirname(self):
         return os.path.dirname(self.file)
 
-    @cached_property
+    # @cached_property
+    @property
     def basename(self):
         return os.path.basename(self.file)
 

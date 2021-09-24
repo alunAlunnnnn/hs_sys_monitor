@@ -60,9 +60,11 @@ def run(db_file, loop, second):
 def _run(db_file, loop):
     if not db_file.endswith(".db"):
         db_file = f"{db_file}.db"
+
     try:
         if not loop:
             click.echo("Start collect system info.")
+
         update_monitor_value_sqlite(db_file)
         if not loop:
             click.echo("Success collect system info.")

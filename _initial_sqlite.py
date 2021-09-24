@@ -1,4 +1,5 @@
 from sys_monitor.utils._db_sqlite import SqliteDB
+import click
 
 config = {
     "sqlite": {
@@ -121,6 +122,10 @@ def init_sqlite(db_file):
 
     # init sqlite handler
     sqlite_handler = SqliteDB(db_file)
+
+    # click.echo(f"Sqlite {sqlite_handler.cur}")
+    # click.echo(f"Sqlite {type(sqlite_handler.cur)}")
+    # click.echo(f"Sqlite {sqlite_handler.cur.__dict__}")
 
     # create tables
     for table_name, fields in sqlite_config.get("tables").items():
