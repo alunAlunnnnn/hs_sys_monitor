@@ -53,3 +53,18 @@
 源码打包：
 
 >pyinstaller -F --distpath ./release --workpath ./release/build -i img\hispatial.ico -n hs_system_monitor sys_monitor_cli.py
+
+
+
+
+
+可能出现的问题：
+
+1、若可以成功初始化数据库，但是无法运行，并且提示 Error message [WinError 21] 设备未就绪。: 'Z' 。
+
+出错原因：电脑或服务器不具有 cd/dvd 驱动器，但是操作系统默认添加了一个 cd/dvd 驱动器，导致无法正常收集该设备的相关信息
+
+解决方法：设备管理器 ---> 卸载设备。卸载对应驱动器的设备 
+
+
+
