@@ -212,6 +212,16 @@ class SqliteDB:
 
         return table
 
+    def copy_table(self, origin_table_name, target_table_name):
+        # make sure origin table is exists
+        assert self.get_table(origin_table_name), f"(Error) Table '{origin_table_name}' is not exists"
+
+        self.cur.execute(f"DROP TABLE IF EXISTS {target_table_name}")
+        self.cur.execute(f"CREATE TABLE IF NOT EXISTS {target_table_name} AS SELECT * FROM {origin_table_name}")
+        self.conn.commit()
+
+        return self.get_table(target_table_name)
+
     def _field_info_parse(self, field_info):
         fields = []
         for field in field_info:

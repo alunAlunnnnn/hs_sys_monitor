@@ -55,6 +55,10 @@
           {
             "name": "disk_io",
             "type": "text"
+          },
+          {
+            "name": "time",
+            "type": "text"
           }
         ],
         "t_hs_hard_info": [
