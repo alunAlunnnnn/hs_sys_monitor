@@ -26,7 +26,10 @@ def init(db_file: str):
 
         # if get table success, copy table
         _back_up_table(sqlite_handler, "t_hs_sys_monitor")
-        _back_up_table(sqlite_handler, "t_hs_hard_info")
+
+        # # drop this table temp
+        # _back_up_table(sqlite_handler, "t_hs_hard_info")
+
         click.echo("**** Step2 ****")
 
         # init databse
@@ -45,8 +48,24 @@ def init(db_file: str):
 @click.option("-s", "--loopSecond", "second", nargs=1, required=False,
               help="The time(second) between twice collect.")
 def run(db_file, loop, second):
+    second = int(second)
+
+    start = time.time()
+    _run(db_file, loop)
+    finish = time.time()
+
+    time_cost = int(finish - start)
+
+    if time_cost >= second:
+        click.echo(
+            f"Warning --- Program would cost {time_cost} seconds per loop, now it will run every {time_cost + 1} seconds")
+        second = time_cost + 1
+    else:
+        second = second - time_cost
+
     if loop:
         click.echo("Start loop collect system info, if you want to cancle, double press 'ctrl + c'.")
+        click.echo(f"Start: '{time.ctime()}'.")
     while loop:
         _run(db_file, loop)
         try:
