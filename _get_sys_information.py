@@ -43,8 +43,10 @@ def _get_cpu_status(start_time):
     cpu_status = {}
 
     cpu_use = psutil.cpu_percent(interval=1, percpu=True)
+    # get cpu use maximum
     cpu_use_max = max(cpu_use)
-    cpu_use_avg = cpu_use_max / cpu_use.__len__()
+    # get cpu use average
+    cpu_use_avg = sum(cpu_use) / cpu_use.__len__()
 
     cpu_use_json = {}
     for i, each_cpu_use in enumerate(cpu_use):
@@ -83,13 +85,15 @@ def _get_mem_status(start_time):
 
 
 @lru_cache(60)
-def _get_disk_status(start_time):
+def _get_disk_net_status(start_time):
     # print("func _get_disk_status")
     disk_status_res = {}
 
     # get disk read/write capacity with dict type
     disk_io_origin = psutil.disk_io_counters(perdisk=True)
+    net_io_origin = psutil.net_io_counters()
     time.sleep(1)
+    net_io = psutil.net_io_counters()
     disk_io = psutil.disk_io_counters(perdisk=True)
 
     # calculate disk io per second
@@ -108,7 +112,26 @@ def _get_disk_status(start_time):
             "unit": unit
         }
 
-    return disk_status_res
+    # network i/o and package i/o
+    net_status = _net_io_calculate(net_io_origin, net_io)
+
+    return disk_status_res, net_status
+
+
+def _net_io_calculate(net_io_origin, net_io):
+    net_send = _byte_convert(net_io.bytes_sent - net_io_origin.bytes_sent, "m")
+    net_receive = _byte_convert(net_io.bytes_recv - net_io_origin.bytes_recv, "m")
+    net_package_send = net_io.packets_sent - net_io_origin.packets_sent
+    net_package_receive = net_io.packets_recv - net_io_origin.packets_recv
+
+    net_status = {
+        "net_send": net_send,
+        "net_receive": net_receive,
+        "net_package_send": net_package_send,
+        "net_package_receive": net_package_receive
+    }
+
+    return net_status
 
 
 @lru_cache(60)
@@ -156,18 +179,18 @@ def get_sys_info():
     # get system status info and insert into table
     cpu_status = _get_cpu_status(start)
     mem_status = _get_mem_status(start)
-    disk_status = _get_disk_status(start)
+    disk_status, net_status = _get_disk_net_status(start)
     # print("cpu status: ", cpu_status)
     # print("mem status: ", mem_status)
     # print("disk status: ", disk_status)
 
-    finish = time.time()
+    # finish = time.time()
     # print("finish: ", finish)
 
-    cost = finish - start
+    # cost = finish - start
     # print("cost: ", cost)
 
-    return time.strftime("%Y-%m-%d %H:%M:%S", time.localtime(start)), hard_info, cpu_status, mem_status, disk_status
+    return time.strftime("%Y-%m-%d %H:%M:%S", time.localtime(start)), hard_info, cpu_status, mem_status, disk_status, net_status
 
 
 if __name__ == '__main__':

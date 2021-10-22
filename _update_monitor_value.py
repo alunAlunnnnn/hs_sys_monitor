@@ -30,7 +30,7 @@ def _hard_info_parse(hard_info):
     return fields, values
 
 
-def _sys_status_parse(cpu_status, mem_status, disk_status):
+def _sys_status_parse(cpu_status, mem_status, disk_status, net_status):
     fields, values = [], []
 
     # get cpu info
@@ -40,6 +40,11 @@ def _sys_status_parse(cpu_status, mem_status, disk_status):
 
     # get memory info
     for field, value in mem_status.items():
+        fields.append(field)
+        values.append(value)
+
+    # get net i/o info
+    for field, value in net_status.items():
         fields.append(field)
         values.append(value)
 
@@ -57,23 +62,25 @@ def update_monitor_value_sqlite(db_file):
     :return:
     """
     # get system status and hardware info
-    run_time, hard_info, cpu_status, mem_status, disk_status = get_sys_info()
+    run_time, hard_info, cpu_status, mem_status, disk_status, net_status = get_sys_info()
 
     # init sqlite handler
     sqlite_handler = SqliteDB(db_file)
 
     # get target table
     t_hs_sys_monitor = sqlite_handler.get_table("t_hs_sys_monitor")
-    t_hs_hard_info = sqlite_handler.get_table("t_hs_hard_info")
 
-    # insert into hardware info table
-    fields, values = _hard_info_parse(hard_info)
-    fields.insert(0, "time")
-    values.insert(0, run_time)
-    t_hs_hard_info.insert(fields, values)
+    # # drop this table temp
+    # t_hs_hard_info = sqlite_handler.get_table("t_hs_hard_info")
+
+    # # insert into hardware info table
+    # fields, values = _hard_info_parse(hard_info)
+    # fields.insert(0, "time")
+    # values.insert(0, run_time)
+    # t_hs_hard_info.insert(fields, values)
 
     # insert into system status table
-    fields, values = _sys_status_parse(cpu_status, mem_status, disk_status)
+    fields, values = _sys_status_parse(cpu_status, mem_status, disk_status, net_status)
     fields.insert(0, "time")
     values.insert(0, run_time)
     t_hs_sys_monitor.insert(fields, values)
@@ -82,4 +89,5 @@ def update_monitor_value_sqlite(db_file):
 
 
 if __name__ == '__main__':
-    update_monitor_value_sqlite("D:/systemonitor/example.db")
+    # update_monitor_value_sqlite("D:/systemonitor/example.db")
+    update_monitor_value_sqlite("D:/systemonitor/example_new.db")

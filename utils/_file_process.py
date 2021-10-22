@@ -48,7 +48,6 @@ class FileProcessor:
         return self.exists
 
 
-
 if __name__ == '__main__':
     file_handler = FileProcessor("./test/test/test.txt")
     print("file: ", file_handler.file)
